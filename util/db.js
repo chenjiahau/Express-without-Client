@@ -1,5 +1,5 @@
 const mongodb = require("mongodb").MongoClient;
-const url = "mongodb://localhost:27017";
+const url = "mongodb://localhost:27017/online_life";
 let _db = null;
 
 const initDb = (callback) => {
@@ -19,7 +19,7 @@ const initDb = (callback) => {
 };
 
 const getDb = () => {
-  if (!db) {
+  if (!_db) {
     throw Error("Database not initialzed");
   }
 
