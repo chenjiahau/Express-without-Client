@@ -31,6 +31,7 @@ router.get(`${path}/db/install/users`, function (req, res, next) {
       company: userData[index].company,
       formerCompanies: userData[index].formerCompanies,
       languages,
+      ownCars: userData[index].ownCars,
       isActive: false,
     };
 
