@@ -47,7 +47,7 @@ router.get('/product/list', function (req, res) {
   req.query.num && (num = req.query.num);
 
   res.send({
-    data: products.splice(0, num)
+    data: products
   });
 });
 
@@ -168,7 +168,7 @@ router.delete('/product/:id', function (req, res) {
   products.splice(index, 1);
 
   res.send({
-    data: products
+    data: products.splice(0, num)
   });
 });
 
