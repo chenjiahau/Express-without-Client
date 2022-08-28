@@ -46,7 +46,7 @@ router.get('/product/list', function (req, res) {
   let num = 10;
   req.query.num && (num = req.query.num);
 
-  res.send({
+  res.json({
     data: products
   });
 });
@@ -64,7 +64,7 @@ router.post('/product', function (req, res) {
   }
 
   if (!isValid) {
-    res.status(400).send({
+    res.status(400).json({
       message: 'Please fill full of fields.'
     });
 
@@ -84,25 +84,33 @@ router.post('/product', function (req, res) {
 
   products.push(newProduct);
   
-  res.send({
+  res.status(201).json({
     data: newProduct
   });
 });
 
-router.get('/product/:id', function (req, res) {
+router.get('/product/:id?', function (req, res) {
+  if (!(req.params.id)) {
+    res.json({
+      data: products
+    });
+
+    return;
+  }
+
   const product = products.find((p) => {
     return p.id === req.params.id;
   });
 
   if (!product) {
-    res.status(400).send({
+    res.status(400).json({
       message: 'id is invalid.'
     });
 
     return;
   }
 
-  res.send({
+  res.json({
     data: product
   });
 });
@@ -123,7 +131,7 @@ router.put('/product/:id', function (req, res) {
   }
 
   if (!isValid) {
-    res.status(400).send({
+    res.status(400).json({
       message: 'Please fill full of fields.'
     });
 
@@ -147,7 +155,7 @@ router.put('/product/:id', function (req, res) {
   const index = products.findIndex((p) => p.id === req.params.id);
   products[index] = updatedProduct;
   
-  res.send({
+  res.json({
     data: updatedProduct
   });
 });
@@ -158,7 +166,7 @@ router.delete('/product/:id', function (req, res) {
   });
 
   if (index < 0) {
-    res.status(400).send({
+    res.status(400).json({
       message: 'id is invalid.'
     });
 
@@ -167,7 +175,7 @@ router.delete('/product/:id', function (req, res) {
 
   products.splice(index, 1);
 
-  res.send({
+  res.json({
     data: products.splice(0, num)
   });
 });
