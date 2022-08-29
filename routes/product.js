@@ -43,9 +43,6 @@ for (let product of products) {
 }
 
 router.get('/product/list', function (req, res) {
-  let num = 10;
-  req.query.num && (num = req.query.num);
-
   res.json({
     status: "success",
     data: products
