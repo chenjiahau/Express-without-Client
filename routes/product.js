@@ -47,6 +47,7 @@ router.get('/product/list', function (req, res) {
   req.query.num && (num = req.query.num);
 
   res.json({
+    status: "success",
     data: products
   });
 });
@@ -65,6 +66,7 @@ router.post('/product', function (req, res) {
 
   if (!isValid) {
     res.status(400).json({
+      status: "error",
       message: 'Please fill full of fields.'
     });
 
@@ -85,6 +87,7 @@ router.post('/product', function (req, res) {
   products.push(newProduct);
   
   res.status(201).json({
+    status: "success",
     data: newProduct
   });
 });
@@ -104,13 +107,15 @@ router.get('/product/:id?', function (req, res) {
 
   if (!product) {
     res.status(400).json({
+      status: "error",
       message: 'id is invalid.'
     });
 
     return;
   }
 
-  res.json({
+  res.status(200).json({
+    status: "success",
     data: product
   });
 });
@@ -132,6 +137,7 @@ router.put('/product/:id', function (req, res) {
 
   if (!isValid) {
     res.status(400).json({
+      status: "error",
       message: 'Please fill full of fields.'
     });
 
@@ -156,6 +162,7 @@ router.put('/product/:id', function (req, res) {
   products[index] = updatedProduct;
   
   res.json({
+    status: "success",
     data: updatedProduct
   });
 });
@@ -167,6 +174,7 @@ router.delete('/product/:id', function (req, res) {
 
   if (index < 0) {
     res.status(400).json({
+      status: "error",
       message: 'id is invalid.'
     });
 
@@ -176,6 +184,7 @@ router.delete('/product/:id', function (req, res) {
   products.splice(index, 1);
 
   res.json({
+    status: "success",
     data: products.splice(0, num)
   });
 });
