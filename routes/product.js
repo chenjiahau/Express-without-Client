@@ -1,62 +1,31 @@
-const { faker } = require('@faker-js/faker');
 const uuid = require('uuid');
 const express = require('express');
 const router = express.Router();
-const products = require('../data/products.json');
-
-const dataModel = {
-  id: {
-    type: String,
-    required: false
-  },
-  category: {
-    type: String,
-    required: true
-  },
-  name: {
-    type: String,
-    required: true
-  },
-  price: {
-    type: Number,
-    required: true
-  },
-  material: {
-    type: String,
-    required: true
-  },
-  description: {
-    type: String,
-    required: true
-  },
-  isActive: {
-    type: Boolean,
-    required: false
-  }
-};
+const productModel = require('../model/product');
+const productList = require('../data/product.json');
 
 const categories = [];
-for (let product of products) {
+for (let product of productList) {
   if (categories.indexOf(product.category) === -1) {
     categories.push(product.category);
   }
 }
 
-router.get('/product/list', function (req, res) {
+const getProductList = (req, res) => {
   res.json({
     status: "success",
-    data: products
+    data: productList
   });
-});
+}
 
-router.post('/product', function (req, res) {
+const addProduct = (req, res) => {
   const newProduct = {};
 
   let isValid = true;
-  for (let model in dataModel) {
-    newProduct[model] = req.body[model];
+  for (let property in productModel) {
+    newProduct[property] = req.body[property];
 
-    if (dataModel[model].required && !req.body[model]) {
+    if (productModel[property].required && !req.body[property]) {
       isValid = false
     }
   }
@@ -70,8 +39,8 @@ router.post('/product', function (req, res) {
     return;
   }
 
-  for (let model in dataModel) {
-    newProduct[model] = req.body[model];
+  for (let property in productModel) {
+    newProduct[property] = req.body[property];
   }
 
   newProduct['id'] = uuid.v4();
@@ -81,24 +50,24 @@ router.post('/product', function (req, res) {
     newProduct.isActive = req.body['isActive'];
   }
 
-  products.push(newProduct);
+  productList.push(newProduct);
   
   res.status(201).json({
     status: "success",
     data: newProduct
   });
-});
+}
 
-router.get('/product/:id?', function (req, res) {
+const getProduct = (req, res) => {
   if (!(req.params.id)) {
     res.json({
-      data: products
+      data: productList
     });
 
     return;
   }
 
-  const product = products.find((p) => {
+  const product = productList.find((p) => {
     return p.id === req.params.id;
   });
 
@@ -115,19 +84,19 @@ router.get('/product/:id?', function (req, res) {
     status: "success",
     data: product
   });
-});
+}
 
-router.put('/product/:id', function (req, res) {
+const updateProduct = (req, res) => {
   const updatedProduct = {};
 
   let isValid = true;
-  for (let model in dataModel) {
-    if (!dataModel[model].required) {
+  for (let property in productModel) {
+    if (!productModel[property].required) {
       continue;
     }
 
-    updatedProduct[model] = req.body[model];
-    if (!req.body[model]) {
+    updatedProduct[property] = req.body[property];
+    if (!req.body[property]) {
       isValid = false
     }
   }
@@ -141,12 +110,12 @@ router.put('/product/:id', function (req, res) {
     return;
   }
 
-  for (let model in dataModel) {
-    if (!dataModel[model].required) {
+  for (let property in productModel) {
+    if (!productModel[property].required) {
       continue;
     }
 
-    updatedProduct[model] = req.body[model];
+    updatedProduct[property] = req.body[property];
   }
 
   if (req.body['isActive'] === undefined || typeof req.body['isActive'] !== "boolean") {
@@ -155,17 +124,17 @@ router.put('/product/:id', function (req, res) {
     updatedProduct.isActive = req.body['isActive'];
   }
 
-  const index = products.findIndex((p) => p.id === req.params.id);
-  products[index] = updatedProduct;
+  const index = productList.findIndex((p) => p.id === req.params.id);
+  productList[index] = updatedProduct;
   
   res.json({
     status: "success",
     data: updatedProduct
   });
-});
+}
 
-router.delete('/product/:id', function (req, res) {
-  const index = products.findIndex((p) => {
+const deleteProduct = (req, res) => {
+  const index = productList.findIndex((p) => {
     return p.id === req.params.id;
   });
 
@@ -178,12 +147,18 @@ router.delete('/product/:id', function (req, res) {
     return;
   }
 
-  products.splice(index, 1);
+  productList.splice(index, 1);
 
   res.json({
     status: "success",
-    data: products.splice(0, num)
+    data: productList
   });
-});
+}
+
+router.get('/product/list', getProductList);
+router.post('/product', addProduct);
+router.get('/product/:id?', getProduct);
+router.put('/product/:id', updateProduct);
+router.delete('/product/:id', deleteProduct);
 
 module.exports = router;
