@@ -60,8 +60,9 @@ const addProduct = (req, res) => {
 
 const getProduct = (req, res) => {
   if (!(req.params.id)) {
-    res.json({
-      data: productList
+    res.status(400).json({
+      status: "error",
+      message: 'id is invalid.'
     });
 
     return;
@@ -155,10 +156,14 @@ const deleteProduct = (req, res) => {
   });
 }
 
-router.get('/product/list', getProductList);
-router.post('/product', addProduct);
-router.get('/product/:id?', getProduct);
-router.put('/product/:id', updateProduct);
-router.delete('/product/:id', deleteProduct);
+router.route('/product/list')
+  .get(getProductList);
+router.route('/product')
+  .post(addProduct);
+router.route('/product/:id?')
+  .get(getProduct);
+router.route('/product/:id')
+  .put(updateProduct)
+  .delete(deleteProduct);
 
 module.exports = router;
