@@ -10,9 +10,41 @@ for (let product of productList) {
   }
 }
 
+const checkId = (req, res, next) => {
+  if (!!req.param.id) {
+    res.status(404).json({
+      status: 'error',
+      data: 'id is invalid'
+    });
+
+    return;
+  }
+
+  next();
+}
+
+const checkProduct = (req, res, next) => {
+  let product = null;
+
+  product = productList.find((p) => {
+    return p.id === req.params.id;
+  });
+
+  if (!product) {
+    res.status(400).json({
+      status: 'error',
+      message: 'Product is not existing'
+    });
+
+    return;
+  }
+
+  next();
+}
+
 const getProductList = (req, res) => {
   res.json({
-    status: "success",
+    status: 'success',
     data: productList
   });
 }
@@ -31,7 +63,7 @@ const addProduct = (req, res) => {
 
   if (!isValid) {
     res.status(400).json({
-      status: "error",
+      status: 'error',
       message: 'Please fill full of fields.'
     });
 
@@ -58,30 +90,12 @@ const addProduct = (req, res) => {
 }
 
 const getProduct = (req, res) => {
-  if (!(req.params.id)) {
-    res.status(400).json({
-      status: "error",
-      message: 'id is invalid.'
-    });
-
-    return;
-  }
-
   const product = productList.find((p) => {
     return p.id === req.params.id;
   });
 
-  if (!product) {
-    res.status(400).json({
-      status: "error",
-      message: 'id is invalid.'
-    });
-
-    return;
-  }
-
   res.status(200).json({
-    status: "success",
+    status: 'success',
     data: product
   });
 }
@@ -104,7 +118,7 @@ const updateProduct = (req, res) => {
 
   if (!isValid) {
     res.status(400).json({
-      status: "error",
+      status: 'error',
       message: 'Please fill full of fields.'
     });
 
@@ -132,7 +146,7 @@ const updateProduct = (req, res) => {
   }
   
   res.json({
-    status: "success",
+    status: 'success',
     data: productList[index]
   });
 }
@@ -141,15 +155,6 @@ const deleteProduct = (req, res) => {
   const index = productList.findIndex((p) => {
     return p.id === req.params.id;
   });
-
-  if (index < 0) {
-    res.status(400).json({
-      status: "error",
-      message: 'id is invalid.'
-    });
-
-    return;
-  }
 
   productList.splice(index, 1);
 
@@ -160,6 +165,8 @@ const deleteProduct = (req, res) => {
 }
 
 module.exports = {
+  checkId,
+  checkProduct,
   getProductList,
   addProduct,
   getProduct,

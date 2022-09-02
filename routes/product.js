@@ -7,10 +7,9 @@ router.route('/list')
   .get(productCtrl.getProductList);
 router.route('/')
   .post(productCtrl.addProduct);
-router.route('/:id?')
-  .get(productCtrl.getProduct);
 router.route('/:id')
-  .put(productCtrl.updateProduct)
-  .delete(productCtrl.deleteProduct);
+  .get(productCtrl.checkId, productCtrl.checkProduct, productCtrl.getProduct)
+  .put(productCtrl.checkId, productCtrl.checkProduct, productCtrl.updateProduct)
+  .delete(productCtrl.checkId, productCtrl.checkProduct, productCtrl.deleteProduct);
 
 module.exports = router;
