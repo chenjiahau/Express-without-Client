@@ -62,10 +62,15 @@ const getProduct = async (req, res) => {
 }
 
 const updateProduct = async (req, res) => {
+  const body = {
+    ...req.body,
+    $push: { "updated_date": Date.now() }
+  };
+
   try {
     const product = await Product.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      body,
       {
         new: true,
         runValidators: true
