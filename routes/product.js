@@ -8,8 +8,8 @@ router.route('/list')
 router.route('/')
   .post(productCtrl.addProduct);
 router.route('/:id')
-  .get(productCtrl.checkId, productCtrl.checkProduct, productCtrl.getProduct)
-  .put(productCtrl.checkId, productCtrl.checkProduct, productCtrl.updateProduct)
-  .delete(productCtrl.checkId, productCtrl.checkProduct, productCtrl.deleteProduct);
+  .get(productCtrl.checkId, productCtrl.getProduct)
+  .put(productCtrl.checkId, productCtrl.updateProduct)
+  .delete(productCtrl.checkId, productCtrl.deleteProduct);
 
 module.exports = router;
