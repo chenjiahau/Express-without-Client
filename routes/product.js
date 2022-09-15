@@ -7,6 +7,7 @@ router.route('/list')
   .get(productCtrl.getProductList);
 
 router.route('/')
+  .get(productCtrl.filterProducts)
   .post(productCtrl.addProduct)
   .delete(productCtrl.deleteAllProduct);
 
