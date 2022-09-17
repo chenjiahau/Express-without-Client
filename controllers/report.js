@@ -22,7 +22,6 @@ const getReport = async (req, res) => {
       },
       {
         $project: {
-          _id: 1,
           avgPrice: { $round: [ "$avgPrice", 2]},
           avgMinPrice: { $round: [ "$avgMinPrice", 2]},
           avgMaxPrice: { $round: [ "$avgMaxPrice", 2]},
