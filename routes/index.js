@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
+
 const product = require("./product");
+const report = require("./report");
 
 const pathSign = {
   api: 'api'
@@ -15,6 +17,8 @@ router.get('/express-test', function(req, res, next) {
   res.send({ message: 'Your express is connected to react!' });
 });
 
-router.use(`/${pathSign.api}/product`, product);
+router
+  .use(`/${pathSign.api}/product`, product)
+  .use(`/${pathSign.api}/report`, report);
 
 module.exports = router;
