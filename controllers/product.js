@@ -153,7 +153,7 @@ const updateProductPrice = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
     product.price = req.params.price;
-    console.log(product);
+
     await product.save({
       validateBeforeSave: true
     })
