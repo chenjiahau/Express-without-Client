@@ -149,6 +149,27 @@ const updateProduct = async (req, res) => {
   }
 }
 
+const updateProductPrice = async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    product.price = req.params.price;
+    console.log(product);
+    await product.save({
+      validateBeforeSave: true
+    })
+
+    res.status(200).json({
+      status: 'success',
+      data: product
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'error',
+      message: err.message
+    });
+  }
+}
+
 const deleteProduct = async (req, res) => {
   try {
     await Product.findByIdAndDelete(req.params.id);
@@ -188,6 +209,7 @@ module.exports = {
   addProduct,
   getProduct,
   updateProduct,
+  updateProductPrice,
   deleteProduct,
   deleteAllProduct
 }

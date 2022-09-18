@@ -16,4 +16,7 @@ router.route('/:id')
   .put(productCtrl.checkId, productCtrl.updateProduct)
   .delete(productCtrl.checkId, productCtrl.deleteProduct);
 
+router.route('/:id/:price')
+.put(productCtrl.checkId, productCtrl.updateProductPrice)
+
 module.exports = router;
