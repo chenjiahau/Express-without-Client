@@ -7,14 +7,14 @@ const db = process.env.DATABASE;
 
 const run = async () => {
   try {
-    const connection = await mongoose.connect(
+    await mongoose.connect(
       db,
       {
         useNewUrlParser: true,
         connectTimeoutMS: 1000
       }
     )
-  
+
     console.log("DB connection successfully");
     runServer();
   } catch(err) {
@@ -35,3 +35,10 @@ const runServer = () => {
 }
 
 run();
+
+// unhandledRejection handle some wrong not inside express
+process.on('unhandledRejection', err => {
+  app.close(() => {
+    process.exit(1);
+  });
+})
