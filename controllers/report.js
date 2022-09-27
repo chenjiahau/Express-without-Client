@@ -37,7 +37,6 @@ const getReport = catchAsync(async (req, res) => {
     }
   ]);
 
-  console.log(productList);
   res.json({
     status: 'success',
     data: productList
