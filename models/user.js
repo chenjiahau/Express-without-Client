@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 const validator = require('validator');
 
 const userSchema = new mongoose.Schema(
@@ -28,6 +29,7 @@ const userSchema = new mongoose.Schema(
       minLength: [ 8, "Confirm password must have more or equal than 8 character"],
       maxLength: [64, "Confirm password must have less or equal than 64 character"],
       validate: {
+        // This is only work on Create or Save
         validator: function (el) {
           return el === this.password;
         },
@@ -41,6 +43,9 @@ const userSchema = new mongoose.Schema(
 userSchema.pre('save', async function (next) {
   // Only run this function if password was actually modified
   if (!this.isModified('password')) return next();
+
+  // Hash the password with cost of 12
+  this.password = await bcrypt.hash(this.password, 12);
 
   // Delete confirmPassword
   this.confirmPassword = undefined;
