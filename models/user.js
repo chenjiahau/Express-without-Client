@@ -36,6 +36,14 @@ const userSchema = new mongoose.Schema(
         message: "Password is not equal confirm password"
       },
       select: false
+    },
+    createdDate: {
+      type: Date,
+      required: true,
+      default: Date.now
+    },
+    passwordUpdatedDate: {
+      type: Date
     }
   }
 );
@@ -51,6 +59,24 @@ userSchema.pre('save', async function (next) {
   this.confirmPassword = undefined;
 
   next();
-})
+});
+
+userSchema.pre('findOneAndUpdate', async function (next) {
+  const updatedProperty = { ...this.getUpdate() };
+
+  if (updatedProperty.password) {
+    // Hash the password with cost of 12
+    updatedProperty.password = await bcrypt.hash(updatedProperty.password, 12);
+    updatedProperty['passwordUpdatedDate'] = Date.now();;
+  }
+
+  this.setUpdate(updatedProperty);
+
+  next();
+});
+
+userSchema.method('isPasswordChangedAfterLogin', function (loginTime) {
+  return +(new Date(this.passwordUpdatedDate).getTime() / 1000) > loginTime;
+});
 
 module.exports = mongoose.model('User', userSchema);

@@ -27,6 +27,20 @@ const handleDBError = (err, res) => {
   return err;
 }
 
+const handleJWTError = (err, res) => {
+  if (err.name === 'JsonWebTokenError') {
+    const message = 'Invalid token';
+    return new AppError(401, message);
+  }
+
+  if (err.name === 'TokenExpiredError') {
+    const message = 'Token is expired';
+    return new AppError(401, message);
+  }
+
+  return err;
+}
+
 const handleProdError = (err, res) => {
   // if err come from Error isOperational is undefined
   // if err come from AppError isOperational is true
@@ -45,6 +59,7 @@ const handleProdError = (err, res) => {
 
 module.exports = {
   catchAsync,
+  handleDBError,
+  handleJWTError,
   handleProdError,
-  handleDBError
 }

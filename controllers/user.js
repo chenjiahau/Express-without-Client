@@ -1,13 +1,57 @@
-const { catchAsync } = require('../utils/util');
+const jwt = require('jsonwebtoken');
+
+const { catchAsync, handleJWTError } = require('../utils/util');
 const AppError = require('../utils/AppError');
 const User = require('../models/user');
 
+const generateToken = (user) => {
+  return jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN
+  });
+}
+
+const authenticate = catchAsync(async (req, res, next) => {
+  let token = null;
+
+  // 1. Check token exist
+  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+    token = req.headers.authorization.split(' ')[1];
+  }
+
+  if (!token) {
+    return next(new AppError(401, 'You are not logged in! Please log in to get access'));
+  }
+
+  // 2. Check token, valid and not expired
+  let decoded = null;
+  try {
+    decoded = await jwt.verify(token, process.env.JWT_SECRET);
+  } catch (err) {
+    return next(handleJWTError(err));
+  }
+
+  // 3. Check if user still exists, user might be deleted after the token was issued)
+  const user = await User.findById(decoded.id);
+  if (!user) {
+    return next(new AppError(401, 'The user belonging to this token does no longer exist'));
+  }
+
+  // 4. Check if user changed password after the token was issued
+  if (user.isPasswordChangedAfterLogin(decoded.iat)) {
+    return next(new AppError(401, 'User recently changed password! Please log in again'));
+  }
+
+  next();
+});
+
 const signup = catchAsync(async (req, res) => {
   const newUser = await User.create(req.body);
+  const token = generateToken(newUser);
 
   res.json({
     status: 'success',
-    data: newUser
+    data: newUser,
+    token
   });
 });
 
@@ -26,9 +70,12 @@ const login = catchAsync(async (req, res, next) => {
     return;
   }
 
+  const token = generateToken(user);
+
   res.json({
     status: 'success',
-    data: user
+    data: user,
+    token
   });
 });
 
@@ -57,6 +104,7 @@ const update = catchAsync(async (req, res, next) => {
 });
 
 module.exports = {
+  authenticate,
   signup,
   login,
   update

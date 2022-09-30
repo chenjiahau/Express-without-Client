@@ -10,6 +10,6 @@ router.route('/login')
   .post(userCtrl.login);
 
 router.route('/update/:id')
-  .put(userCtrl.update);
+  .put(userCtrl.authenticate, userCtrl.update);
 
 module.exports = router;
