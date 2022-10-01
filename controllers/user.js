@@ -41,8 +41,20 @@ const authenticate = catchAsync(async (req, res, next) => {
     return next(new AppError(401, 'User recently changed password! Please log in again'));
   }
 
+  req.user = user;
+
   next();
 });
+
+const checkRole = (roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return next(new AppError(403, 'You do not have permission to perform this action'));
+    }
+
+    next();
+  }
+}
 
 const signup = catchAsync(async (req, res) => {
   const newUser = await User.create(req.body);
@@ -105,6 +117,7 @@ const update = catchAsync(async (req, res, next) => {
 
 module.exports = {
   authenticate,
+  checkRole,
   signup,
   login,
   update

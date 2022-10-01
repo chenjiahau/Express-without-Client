@@ -19,7 +19,8 @@ const productSchema = new mongoose.Schema(
       enum: {
         values: ["white", "black", "red", "yellow", "green", "blue", "orange"],
         message: "color muse be one of them, white, black, red, yellow, green, blue, orange"
-      }
+      },
+      default: "white"
     },
     price: {
       type: Number,

@@ -37,6 +37,14 @@ const userSchema = new mongoose.Schema(
       },
       select: false
     },
+    role: {
+      type: String,
+      enum: {
+        values: ["admin", "editor", "viewer"],
+        message: "Role is invlide"
+      },
+      default: "viewer"
+    },
     createdDate: {
       type: Date,
       required: true,
