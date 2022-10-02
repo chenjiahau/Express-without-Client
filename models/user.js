@@ -83,6 +83,10 @@ userSchema.pre('findOneAndUpdate', async function (next) {
   next();
 });
 
+userSchema.method('isPasswordRight', async function (inputtedPassword, savedPassword) {
+  return await bcrypt.compare(inputtedPassword, savedPassword);
+})
+
 userSchema.method('isPasswordChangedAfterLogin', function (loginTime) {
   return +(new Date(this.passwordUpdatedDate).getTime() / 1000) > loginTime;
 });

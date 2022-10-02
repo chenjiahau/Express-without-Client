@@ -75,9 +75,10 @@ const login = catchAsync(async (req, res, next) => {
     return;
   }
 
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email }).select('+password');
+  const isPasswordRight = await user.isPasswordRight(password, user.password);
 
-  if (!user) {
+  if (!user || !isPasswordRight) {
     next(new AppError(400, 'Email or passowrd is invalid'));
     return;
   }
