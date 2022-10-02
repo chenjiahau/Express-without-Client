@@ -97,14 +97,8 @@ const update = catchAsync(async (req, res, next) => {
     ...req.body
   };
 
-  const user = await User.findByIdAndUpdate(
-    req.params.id,
-    body,
-    {
-      new: true,
-      runValidators: true
-    }
-  );
+  const user = await User.findById(req.params.id);
+  Object.assign(user, req.body)
 
   await user.save({
     validateBeforeSave: true

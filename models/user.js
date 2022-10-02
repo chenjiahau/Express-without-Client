@@ -62,23 +62,10 @@ userSchema.pre('save', async function (next) {
 
   // Hash the password with cost of 12
   this.password = await bcrypt.hash(this.password, 12);
+  this.passwordUpdatedDate = Date.now();
 
   // Delete confirmPassword
   this.confirmPassword = undefined;
-
-  next();
-});
-
-userSchema.pre('findOneAndUpdate', async function (next) {
-  const updatedProperty = { ...this.getUpdate() };
-
-  if (updatedProperty.password) {
-    // Hash the password with cost of 12
-    updatedProperty.password = await bcrypt.hash(updatedProperty.password, 12);
-    updatedProperty['passwordUpdatedDate'] = Date.now();;
-  }
-
-  this.setUpdate(updatedProperty);
 
   next();
 });
