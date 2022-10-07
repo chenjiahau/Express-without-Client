@@ -12,6 +12,9 @@ router.route('/login')
 router.route('/forgot-password')
   .post(userCtrl.forgotPassword);
 
+router.route('/reset-password/:token')
+  .post(userCtrl.resetPassword);
+
 router.route('/update/:id')
   .put(userCtrl.authenticate, userCtrl.update);
 
