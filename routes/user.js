@@ -9,6 +9,9 @@ router.route('/signup')
 router.route('/login')
   .post(userCtrl.login);
 
+router.route('/forgot-password')
+  .post(userCtrl.forgotPassword);
+
 router.route('/update/:id')
   .put(userCtrl.authenticate, userCtrl.update);
 

@@ -1,3 +1,7 @@
+// crypto
+// It is one of modules of NodeJS
+// It provides a way of handling encrypted data
+const crypto = require('crypto');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const validator = require('validator');
@@ -52,6 +56,14 @@ const userSchema = new mongoose.Schema(
     },
     passwordUpdatedDate: {
       type: Date
+    },
+    passwordResetToken: {
+      type: String,
+      required: false
+    },
+    passwordResetExpiresdDate: {
+      type: Date,
+      required: false
     }
   }
 );
@@ -76,6 +88,15 @@ userSchema.method('isPasswordRight', async function (inputtedPassword, savedPass
 
 userSchema.method('isPasswordChangedAfterLogin', function (loginTime) {
   return +(new Date(this.passwordUpdatedDate).getTime() / 1000) > loginTime;
+});
+
+userSchema.method('createPasswordResetToken', function () {
+  // Generate 32 bytess and output to string(origin string)
+  const resetToken = crypto.randomBytes(32).toString('hex');
+
+  // Encrype restToken(encrypted string)
+  this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+  this.passwordResetExpiresdDate = Date.now() + 10 * 60 * 1000;
 });
 
 module.exports = mongoose.model('User', userSchema);

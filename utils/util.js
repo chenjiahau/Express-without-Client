@@ -1,4 +1,5 @@
-var AppError = require('./AppError');
+const nodemailer = require('nodemailer');
+const AppError = require('./AppError');
 
 const catchAsync = fn => {
   return (req, res, next) => {
@@ -57,9 +58,37 @@ const handleProdError = (err, res) => {
   }
 }
 
+const sendEmail = async (option) => {
+  // 1. Create a transporter
+  const transporter = nodemailer.createTransport({
+    host: 'outlook.office365.com',
+    secureConnection: false,
+    port: 587,
+    auth: {
+      user: process.env['EMAIL'],
+      pass: process.env['EMAIL_PASSWORD']
+    },
+    tls: {
+      ciphers:'SSLv3'
+  }
+  });
+
+  // 2. Define the email options
+  const mailOption = {
+    from: `Ivan Chen <${process.env['EMAIL']}>`,
+    to: option.email,
+    subject: option.subject,
+    text: option.message
+  };
+
+  // 3. Send
+  await transporter.sendMail(mailOption);
+}
+
 module.exports = {
   catchAsync,
   handleDBError,
   handleJWTError,
   handleProdError,
+  sendEmail
 }
