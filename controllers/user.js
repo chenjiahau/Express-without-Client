@@ -112,22 +112,27 @@ const forgotPassword = catchAsync(async (req, res, next) => {
   message += `Submit a PATCH request with your new password and passwordConfirm to: ${restURL}. \n`;
   message += 'If you didn\'t forgot your password, please ignore this email.';
 
-  await sendEmail({
-    email: user.email,
-    subject: 'Your password rest token (valid for 10 min)',
-    message
-  });
+  try {
+    await sendEmail({
+      email: user.email,
+      subject: 'Your password rest token (valid for 10 min)',
+      message
+    });
 
-  res.json({
-    status: 'success'
-  });
+    res.json({
+      status: 'success'
+    });
+  } catch (err) {
+    user.passwordResetToken = undefined;
+    user.passwordResetExpiresdDate = undefined;
+
+    await user.save({ validateBeforeSave: true });
+
+    return next(new AppError(500, 'Cannot send the email, try again later.'));
+  }
 });
 
 const update = catchAsync(async (req, res, next) => {
-  const body = {
-    ...req.body
-  };
-
   const user = await User.findById(req.params.id);
   Object.assign(user, req.body)
 

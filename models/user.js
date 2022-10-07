@@ -92,11 +92,13 @@ userSchema.method('isPasswordChangedAfterLogin', function (loginTime) {
 
 userSchema.method('createPasswordResetToken', function () {
   // Generate 32 bytess and output to string(origin string)
-  const resetToken = crypto.randomBytes(32).toString('hex');
+  const resetToken = crypto.randomBytes(8).toString('hex');
 
   // Encrype restToken(encrypted string)
   this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
   this.passwordResetExpiresdDate = Date.now() + 10 * 60 * 1000;
+
+  return resetToken;
 });
 
 module.exports = mongoose.model('User', userSchema);
