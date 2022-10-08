@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const favicon = require('serve-favicon');
 const logger = require('morgan');
+const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 
@@ -17,11 +18,16 @@ app.set('view engine', 'pug');
 // Uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 
+// It must put first position in middleware
+// app.use(helmet());
+
 if (process.env['NODE_ENV'] === 'development') {
   app.use(logger('dev'));
 }
 
-app.use(bodyParser.json());
+// It isn't related with helmet
+app.use(bodyParser.json({ limit: '10kb' })); 
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
