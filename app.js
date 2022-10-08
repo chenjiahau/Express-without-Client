@@ -6,6 +6,7 @@ const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const mongoSanitize = require('express-mongo-sanitize');
+const xss = require('xss-clean');
 
 const routes = require('./routes/index');
 const { handleDBError, handleProdError } = require('./utils/util');
@@ -32,8 +33,17 @@ app.use(bodyParser.json({ limit: '10kb' }));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-// To remove data using these defaults:
+// Sanitize illegal query like
+// {
+//  "email": { "$gt": "" }
+// }
 app.use(mongoSanitize());
+
+// Sanitize illegal query like
+// {
+//  "email": "<script>...</script>"
+// }
+app.use(xss());
 
 app.use(express.static(path.join(__dirname, 'public')));
 
