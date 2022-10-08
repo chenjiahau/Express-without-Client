@@ -176,6 +176,29 @@ const update = catchAsync(async (req, res, next) => {
   });
 });
 
+const updatePassword = catchAsync(async (req, res, next) => {
+  // 1. Get user from collection
+  const user = await User.findById(req.user.id).select('+password');
+
+  // 2. Verify old password
+  if (!(await user.isPasswordRight(req.body.currentPassword, user.password))) {
+    return next(new AppError(401, 'Your current password is wrong'));
+  }
+
+  // 3. Update password
+  user.password = req.body.password;
+  user.confirmPassword = req.body.confirmPassword;
+  await user.save();
+
+  // 4. Get new token to user
+  const token = generateToken(user);
+
+  res.json({
+    status: 'success',
+    token
+  });
+});
+
 module.exports = {
   authenticate,
   checkRole,
@@ -183,5 +206,6 @@ module.exports = {
   login,
   forgotPassword,
   resetPassword,
-  update
+  update,
+  updatePassword
 }

@@ -18,4 +18,7 @@ router.route('/reset-password/:token')
 router.route('/update/:id')
   .put(userCtrl.authenticate, userCtrl.update);
 
+router.route('/update-password')
+  .post(userCtrl.authenticate, userCtrl.updatePassword);
+
 module.exports = router;
