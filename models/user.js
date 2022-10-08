@@ -64,6 +64,12 @@ const userSchema = new mongoose.Schema(
     passwordResetExpiresdDate: {
       type: Date,
       required: false
+    },
+    isActive: {
+      type: Boolean,
+      required: true,
+      default: true,
+      select: false
     }
   }
 );
@@ -79,6 +85,13 @@ userSchema.pre('save', async function (next) {
   // Delete confirmPassword
   this.confirmPassword = undefined;
 
+  next();
+});
+
+// Forbid unactive user to log in
+// Both of find or findAndUpdate can run into
+userSchema.pre(/^find/, function (next) {
+  this.find({ isActive: true });
   next();
 });
 

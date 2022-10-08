@@ -21,4 +21,7 @@ router.route('/update-profile/:id')
 router.route('/update-password')
   .post(userCtrl.authenticate, userCtrl.updatePassword);
 
+router.route('/delete-self')
+  .delete(userCtrl.authenticate, userCtrl.deleteSelf);
+
 module.exports = router;

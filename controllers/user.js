@@ -213,6 +213,15 @@ const updatePassword = catchAsync(async (req, res, next) => {
   });
 });
 
+const deleteSelf = catchAsync(async (req, res, next) => {
+  await User.findByIdAndUpdate(req.user.id, { isActive: false });
+
+  res.status(204).json({
+    status: 'success',
+    data: null
+  });
+});
+
 module.exports = {
   authenticate,
   checkRole,
@@ -221,5 +230,6 @@ module.exports = {
   forgotPassword,
   resetPassword,
   updateProfile,
-  updatePassword
+  updatePassword,
+  deleteSelf
 }
