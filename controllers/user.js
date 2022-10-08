@@ -162,7 +162,13 @@ const resetPassword = catchAsync(async (req, res, next) => {
   });
 });
 
-const update = catchAsync(async (req, res, next) => {
+const updateProfile = catchAsync(async (req, res, next) => {
+  // 1. Create error if user posts password data
+  if (req.body.password || req.body.confirmPassword) {
+    return next(new AppError(400, 'This route is not for password updates'));
+  }
+
+  // 2. Update user docuement
   const user = await User.findById(req.params.id);
   Object.assign(user, req.body)
 
@@ -206,6 +212,6 @@ module.exports = {
   login,
   forgotPassword,
   resetPassword,
-  update,
+  updateProfile,
   updatePassword
 }

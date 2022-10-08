@@ -15,8 +15,8 @@ router.route('/forgot-password')
 router.route('/reset-password/:token')
   .post(userCtrl.resetPassword);
 
-router.route('/update/:id')
-  .put(userCtrl.authenticate, userCtrl.update);
+router.route('/update-profile/:id')
+  .put(userCtrl.authenticate, userCtrl.updateProfile);
 
 router.route('/update-password')
   .post(userCtrl.authenticate, userCtrl.updatePassword);
