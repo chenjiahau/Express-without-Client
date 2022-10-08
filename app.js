@@ -7,6 +7,7 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
+const hpp = require('hpp');
 
 const routes = require('./routes/index');
 const { handleDBError, handleProdError } = require('./utils/util');
@@ -44,6 +45,11 @@ app.use(mongoSanitize());
 //  "email": "<script>...</script>"
 // }
 app.use(xss());
+
+// Prevent parameter pollution
+// app.use(hpp({
+//   whitelist: []
+// }));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
