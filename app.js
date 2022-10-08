@@ -5,6 +5,7 @@ const logger = require('morgan');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
+const mongoSanitize = require('express-mongo-sanitize');
 
 const routes = require('./routes/index');
 const { handleDBError, handleProdError } = require('./utils/util');
@@ -19,7 +20,7 @@ app.set('view engine', 'pug');
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 
 // It must put first position in middleware
-// app.use(helmet());
+app.use(helmet());
 
 if (process.env['NODE_ENV'] === 'development') {
   app.use(logger('dev'));
@@ -30,6 +31,10 @@ app.use(bodyParser.json({ limit: '10kb' }));
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+// To remove data using these defaults:
+app.use(mongoSanitize());
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
