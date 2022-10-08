@@ -168,9 +168,17 @@ const updateProfile = catchAsync(async (req, res, next) => {
     return next(new AppError(400, 'This route is not for password updates'));
   }
 
-  // 2. Update user docuement
+  // 2. Forbid update role
+  let allowdProperties = {};
+  for (let property in req.body) {
+    if (property !== 'role') {
+      allowdProperties[property] = req.body[property];
+    }
+  }
+
+  // 3. Update user docuement
   const user = await User.findById(req.params.id);
-  Object.assign(user, req.body)
+  Object.assign(user, allowdProperties);
 
   await user.save({
     validateBeforeSave: true
