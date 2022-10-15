@@ -5,6 +5,7 @@ const router = express.Router();
 const user = require("./user");
 const product = require("./product");
 const report = require("./report");
+const order = require("./order");
 
 const userCtrl = require('../controllers/user');
 
@@ -31,6 +32,7 @@ router.get('/express-test', function(req, res, next) {
 router
   .use(`/${pathSign.api}/user`, user)
   .use(`/${pathSign.api}/product`, rateLimitOption, userCtrl.authenticate, product)
-  .use(`/${pathSign.api}/report`, userCtrl.authenticate, report);
+  .use(`/${pathSign.api}/report`, userCtrl.authenticate, report)
+  .use(`/${pathSign.api}/order`, userCtrl.authenticate, order);
 
 module.exports = router;
