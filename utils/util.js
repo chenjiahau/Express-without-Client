@@ -7,6 +7,19 @@ const catchAsync = fn => {
   }
 }
 
+const checkParamsId = (req, res, next) => {
+  if (!req.params.id || req.params.id === ':id') {
+    res.status(404).json({
+      status: 'error',
+      data: 'ID is invalid'
+    });
+
+    return;
+  }
+
+  next();
+}
+
 const handleDBError = (err, res) => {
   if (err.name === 'CastError') {
     const message = `Invalid ${err.path}: ${err.value}`;
@@ -87,6 +100,7 @@ const sendEmail = async (option) => {
 
 module.exports = {
   catchAsync,
+  checkParamsId,
   handleDBError,
   handleJWTError,
   handleProdError,

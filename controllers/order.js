@@ -27,7 +27,23 @@ const addOrder = catchAsync(async (req, res, next) => {
   });
 });
 
+const getOrder = catchAsync(async (req, res, next) => {
+  let order = null;
+
+  try {
+    order = await Order.findById(req.params.id);
+  } catch (err) {
+    return next(new AppError(500, `No order found with that ID: ${req.params.id}`));
+  }
+
+  res.status(200).json({
+    status: 'success',
+    data: order
+  });
+});
+
 module.exports = {
   getAllOrders,
-  addOrder
+  addOrder,
+  getOrder
 }
