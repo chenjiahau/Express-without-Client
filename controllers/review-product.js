@@ -22,7 +22,23 @@ const writeReview = catchAsync(async (req, res, next) => {
   });
 });
 
+const getReview = catchAsync(async (req, res, next) => {
+  let review = null;
+
+  try {
+    review = await ReviewProduct.findById(req.params.id);
+  } catch (err) {
+    return next(new AppError(500, `No review found with that ID: ${req.params.id}`));
+  }
+
+  res.status(200).json({
+    status: 'success',
+    data: review
+  });
+});
+
 module.exports = {
   getAllReviews,
-  writeReview
+  writeReview,
+  getReview
 }
