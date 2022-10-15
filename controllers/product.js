@@ -3,10 +3,10 @@ const AppError = require('../utils/AppError');
 const Product = require('../models/product');
 
 const checkId = (req, res, next) => {
-  if (!!req.param.id) {
+  if (!req.params.id || req.params.id === ':id') {
     res.status(404).json({
       status: 'error',
-      data: 'id is invalid'
+      data: 'ID is invalid'
     });
 
     return;
@@ -86,10 +86,12 @@ const addProduct = catchAsync(async (req, res) => {
 });
 
 const getProduct = catchAsync(async (req, res, next) => {
-  const product = await Product.findById(req.params.id);
+  let product = null;
 
-  if (!product) {
-    return next(new AppError(500, `No product found with that ID: ${req.param.id}`));
+  try {
+    product = await Product.findById(req.params.id);
+  } catch(err) {
+    return next(new AppError(500, `No product found with that ID: ${req.params.id}`));
   }
 
   res.status(200).json({
