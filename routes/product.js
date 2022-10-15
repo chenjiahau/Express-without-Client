@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
+const { checkParamsId } = require('../utils/util');
+
 const userCtrl = require('../controllers/user');
 const productCtrl = require('../controllers/product');
 
@@ -13,11 +15,11 @@ router.route('/')
   .delete(userCtrl.checkRole(['admin', 'editor']), productCtrl.deleteAllProduct);
 
 router.route('/:id')
-  .get(productCtrl.checkId, productCtrl.getProduct)
-  .put(productCtrl.checkId, productCtrl.updateProduct)
-  .delete(userCtrl.checkRole(['admin', 'editor']), productCtrl.checkId, productCtrl.deleteProduct);
+  .get(checkParamsId, productCtrl.getProduct)
+  .put(checkParamsId, productCtrl.updateProduct)
+  .delete(userCtrl.checkRole(['admin', 'editor']), checkParamsId, productCtrl.deleteProduct);
 
 router.route('/:id/:price')
-.put(productCtrl.checkId, productCtrl.updateProductPrice)
+.put(checkParamsId, productCtrl.updateProductPrice)
 
 module.exports = router;

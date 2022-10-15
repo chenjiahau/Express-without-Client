@@ -2,19 +2,6 @@ const { catchAsync } = require('../utils/util');
 const AppError = require('../utils/AppError');
 const Product = require('../models/product');
 
-const checkId = (req, res, next) => {
-  if (!req.params.id || req.params.id === ':id') {
-    res.status(404).json({
-      status: 'error',
-      data: 'ID is invalid'
-    });
-
-    return;
-  }
-
-  next();
-}
-
 const getProductList = catchAsync(async (req, res) => {
   const productList = await Product.find();
 
@@ -154,7 +141,6 @@ const deleteAllProduct = catchAsync(async (req, res) => {
 });
 
 module.exports = {
-  checkId,
   getProductList,
   filterProducts,
   addProduct,
