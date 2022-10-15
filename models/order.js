@@ -1,3 +1,4 @@
+const { expectCt } = require('helmet');
 const mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema(
@@ -14,5 +15,21 @@ const orderSchema = new mongoose.Schema(
     ]
   }
 );
+
+orderSchema.pre(/^find/, function (next) {
+  // Known question
+  // 1. virtual field cannot exclude
+  // 2. if document has virtual field, even select -_id, it is still there
+  this
+    .populate({
+      path: 'user',
+      select: 'name'
+    })
+    .populate({
+      path: 'products'
+    });
+
+  next();
+});
 
 module.exports = mongoose.model('Order', orderSchema);
