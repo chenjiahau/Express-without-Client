@@ -2,10 +2,10 @@ const express = require('express');
 const router = express.Router();
 
 const orderCtrl = require('../controllers/order');
-const order = require('../models/order');
+const userCtrl = require('../controllers/user');
 
 router.route('/')
-  .get(orderCtrl.getAllOrders)
-  .post(orderCtrl.addOrder);
+  .get(userCtrl.authenticate, orderCtrl.getAllOrders)
+  .post(userCtrl.authenticate, orderCtrl.addOrder);
 
 module.exports = router;

@@ -1,11 +1,12 @@
-const { expectCt } = require('helmet');
 const mongoose = require('mongoose');
+const AppError = require('../utils/AppError');
 
 const orderSchema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.ObjectId,
-      ref: 'User'
+      ref: 'User',
+      required: [true, "Order must belong to user"]
     },
     products: [
       { 
