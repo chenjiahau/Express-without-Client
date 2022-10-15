@@ -37,8 +37,18 @@ const getReview = catchAsync(async (req, res, next) => {
   });
 });
 
+const getReviewByUser = catchAsync(async (req, res, next) => {
+  const reviewList = await ReviewProduct.find({ user: req.user.id });
+
+  res.status(200).json({
+    status: 'success',
+    data: reviewList
+  });
+});
+
 module.exports = {
   getAllReviews,
   writeReview,
-  getReview
+  getReview,
+  getReviewByUser
 }

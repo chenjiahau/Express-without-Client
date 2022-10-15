@@ -9,7 +9,10 @@ router.route('/')
   .get(reviewProductCtrl.getAllReviews)
   .post(reviewProductCtrl.writeReview);
 
+router.route('/user')
+  .get(reviewProductCtrl.getReviewByUser);
+
 router.route('/:id')
-  .get(checkParamsId, reviewProductCtrl.getReview)
+  .get(checkParamsId, reviewProductCtrl.getReview);
 
 module.exports = router;
