@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const AppError = require('../utils/AppError');
+const Product = require('./product');
 
 const orderSchema = new mongoose.Schema(
   {
@@ -8,14 +8,16 @@ const orderSchema = new mongoose.Schema(
       ref: 'User',
       required: [true, "Order must belong to user"]
     },
-    products: [
-      { 
-        type: mongoose.Schema.ObjectId,
-        ref: 'Product'
-      }
-    ]
+    products: Array
   }
 );
+
+orderSchema.pre('save', async function (next) {
+  const productPromises = this.products.map(async (id) => await Product.findById(id).select('product price'));
+  this.products = await Promise.all(productPromises);
+
+  next();
+});
 
 orderSchema.pre(/^find/, function (next) {
   // Known question
@@ -26,11 +28,11 @@ orderSchema.pre(/^find/, function (next) {
       path: 'user',
       select: 'name'
     })
-    .populate({
-      path: 'products'
-    });
+    .select('products._id products.product products.price ');
 
   next();
 });
+
+
 
 module.exports = mongoose.model('Order', orderSchema);
