@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const userCtrl = require('../controllers/user');
+const reviewProductRouter = require('../routes/review-product');
 
 router.route('/signup')
   .post(userCtrl.signup);
@@ -23,5 +24,7 @@ router.route('/update-password')
 
 router.route('/delete-self')
   .delete(userCtrl.authenticate, userCtrl.deleteSelf);
+
+router.use('/reviews', userCtrl.authenticate, reviewProductRouter);
 
 module.exports = router;
