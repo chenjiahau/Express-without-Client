@@ -6,6 +6,7 @@ const user = require("./user");
 const product = require("./product");
 const report = require("./report");
 const order = require("./order");
+const reviewProduct = require("./review-product");
 
 const userCtrl = require('../controllers/user');
 
@@ -33,6 +34,7 @@ router
   .use(`/${pathSign.api}/user`, user)
   .use(`/${pathSign.api}/product`, rateLimitOption, userCtrl.authenticate, product)
   .use(`/${pathSign.api}/report`, userCtrl.authenticate, report)
-  .use(`/${pathSign.api}/order`, userCtrl.authenticate, order);
+  .use(`/${pathSign.api}/order`, userCtrl.authenticate, order)
+  .use(`/${pathSign.api}/review-product`, userCtrl.authenticate, reviewProduct);
 
 module.exports = router;
