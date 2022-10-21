@@ -2,6 +2,8 @@ const { catchAsync } = require('../utils/util');
 const AppError = require('../utils/AppError');
 const Product = require('../models/product');
 
+const deleteFactory = require('./factory/delete.facotry');
+
 const getProductList = catchAsync(async (req, res) => {
   const productList = await Product.find();
 
@@ -122,14 +124,7 @@ const updateProductPrice = catchAsync(async (req, res) => {
   });
 });
 
-const deleteProduct = catchAsync(async (req, res) => {
-  await Product.findByIdAndDelete(req.params.id);
-
-  res.status(200).json({
-    status: 'success',
-    data: null
-  });
-});
+const deleteProduct = deleteFactory(Product);
 
 const deleteAllProduct = catchAsync(async (req, res) => {
   await Product.deleteMany();
