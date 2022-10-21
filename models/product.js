@@ -90,6 +90,9 @@ const productSchema = new mongoose.Schema(
   }
 );
 
+productSchema.index({ product: 1 });
+productSchema.index({ 'min_price': 1, 'max_price': 1 });
+
 productSchema.virtual('mid_price')
   .get(function () {
     return Math.floor((this.max_price + this.min_price) / 2);
