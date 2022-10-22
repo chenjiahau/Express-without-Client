@@ -13,6 +13,7 @@ router.route('/user')
   .get(reviewProductCtrl.getReviewByUser);
 
 router.route('/:id')
-  .get(checkParamsId, reviewProductCtrl.getReview);
+  .get(checkParamsId, reviewProductCtrl.getReview)
+  .delete(checkParamsId, reviewProductCtrl.deleteReview)
 
 module.exports = router;

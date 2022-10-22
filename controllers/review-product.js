@@ -2,6 +2,8 @@ const { catchAsync } = require('../utils/util');
 const AppError = require('../utils/AppError');
 const ReviewProduct = require('../models/review-product');
 
+const deleteFactory = require('./factory/delete.facotry');
+
 const getAllReviews = catchAsync(async (req, res) => {
   const reviewList = await ReviewProduct.find();
 
@@ -46,9 +48,12 @@ const getReviewByUser = catchAsync(async (req, res, next) => {
   });
 });
 
+const deleteReview =  deleteFactory(ReviewProduct);
+
 module.exports = {
   getAllReviews,
   writeReview,
   getReview,
-  getReviewByUser
+  getReviewByUser,
+  deleteReview
 }
